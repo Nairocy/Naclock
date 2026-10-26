@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="3.79">
+    <title>Naclock</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+        background-color: #000000;
+        background-image: url('res/pic/nano.webp');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    a {
+        color: #00CED1;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #20B2AA;
+        text-decoration: underline;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 8px;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #333;
+        margin-bottom: 2rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+    }
+
+    nav li {
+        margin-left: 1.5rem;
+    }
+
+    nav a {
+        color: #ffffff;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+
+    nav a:hover {
+        opacity: 0.7;
+        text-decoration: none;
+    }
+
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .feature-box {
+        background-color: #111;
+        padding: 1.5rem;
+        border-radius: 4px;
+        border: 1px solid #333;
+    }
+
+    .feature-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .feature-title svg {
+        margin-right: 0.5rem;
+    }
+
+    .feature-desc {
+        color: #ccc;
+        line-height: 1.5;
+    }
+
+    footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        border-top: 1px solid #333;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal {
+        background-color: rgba(20, 20, 25, 0.5);
+        border: 1px solid rgba(68, 68, 68, 0.7);
+        border-radius: 8px;
+        backdrop-filter: blur(2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+
+    #updateModal .modal {
+        width: 90%;
+        max-width: 750px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+    }
+
+    .modal-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-right {
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .version-header {
+        margin-bottom: 1rem;
+    }
+
+    .version-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .version-current {
+        font-size: 0.95rem;
+        color: #aaa;
+    }
+
+    .version-new {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #4ecdc4;
+    }
+
+    .version-arrow {
+        margin: 0 8px;
+        color: #666;
+    }
+
+    .file-size {
+        color: #888;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+    }
+
+    .info-container {
+        display: flex;
+    }
+
+    .notes-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .update-notes-label {
+        color: #ccc;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkbox-container input {
+        margin-right: 0.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-container label {
+        color: #aaa;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .update-notes-container {
+        background: rgba(40, 40, 45, 0.5);
+        border: 1px solid rgba(68, 68, 68, 0.6);
+        border-radius: 6px;
+        padding: 1rem;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 200px;
+    }
+
+    .update-notes {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #ddd;
+    }
+
+    .update-notes p {
+        margin-bottom: 0.5rem;
+    }
+
+    .update-notes p:last-child {
+        margin-bottom: 0;
+    }
+
+    .force-update-warning {
+        background: rgba(255, 80, 80, 0.15);
+        border: 1px solid rgba(255, 80, 80, 0.3);
+        border-radius: 6px;
+        padding: 0.7rem;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .warning-text {
+        color: #ffb3b3;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .image-container {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid rgba(68, 68, 68, 0.6);
+        margin-bottom: 1rem;
+    }
+
+    .version-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .action-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .btn-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+
+    .btn {
+        background-color: rgba(68, 68, 68, 0.6);
+        color: #fff;
+        border: 1px solid rgba(85, 85, 85, 0.6);
+        padding: 0.7rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .btn:hover {
+        background-color: rgba(85, 85, 85, 0.6);
+    }
+
+    .btn-primary {
+        background-color: rgba(78, 205, 196, 0.6);
+        color: #000;
+        border-color: rgba(78, 205, 196, 0.5);
+    }
+
+    .btn-primary:hover {
+        background-color: rgba(61, 188, 180, 0.9);
+    }
+
+    /* 强制更新时的特殊样式 */
+    .btn-container.force-update {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    .btn-container.force-update .btn-primary {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    #welcomeModal .modal {
+        width: 90%;
+        max-width: 500px;
+        padding: 1.5rem;
+    }
+
+    #welcomeModal h2 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        text-align: left;
+        color: #fff;
+        border-bottom: 1px solid rgba(68, 68, 68, 0.4);
+        padding-bottom: 0.8rem;
+    }
+
+    #welcomeModal .modal-content {
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    #welcomeModal .modal-content > p {
+        margin-bottom: 1.2rem;
+    }
+
+    #welcomeModal .modal-content > p:first-of-type {
+        color: #4ecdc4;
+        font-weight: 500;
+    }
+
+    #welcomeModal .modal-content > p:not(:first-of-type) {
+        margin-left: 0.5rem;
+        padding-left: 0.8rem;
+        border-left: 2px solid rgba(68, 68, 68, 0.5);
+        color: #ccc;
+    }
+
+    #welcomeModal .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(68, 68, 68, 0.5);
+    }
+
+    #welcomeModal .checkbox-container {
+        display: flex;
+        align-items: center;
+    }
+
+    #welcomeModal .checkbox-container label {
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    #welcomeModal .btn {
+        background-color: rgba(78, 205, 196, 0.6);
+        color: #000;
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        min-width: 80px;
+    }
+
+    #welcomeModal .btn:hover {
+        background-color: rgba(61, 188, 180, 0.7);
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            grid-template-columns: 1fr;
+        }
+
+        header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        nav ul {
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0 0.75rem;
+        }
+
+        #updateModal .modal {
+            width: 95%;
+            max-height: 80vh;
+            padding: 1.2rem;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        #updateModal .modal-right {
+            width: 100%;
+            order: -1;
+            align-items: center;
+        }
+
+        #updateModal .image-container {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 0.8rem;
+        }
+
+        #updateModal .action-section {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #updateModal .btn-container {
+            flex-direction: row;
+        }
+
+        #updateModal .btn {
+            flex: 1;
+        }
+
+        #updateModal .notes-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        #updateModal .checkbox-container {
+            align-self: flex-end;
+        }
+
+        #updateModal .version-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        #updateModal .info-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+        
+        #updateModal .file-size {
+            margin-left: 0;
+            margin-top: 0.3rem;
+        }
+
+        #welcomeModal .modal {
+            width: 95%;
+            padding: 1.2rem;
+        }
+
+        #welcomeModal .modal-actions {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        #welcomeModal .checkbox-container {
+            justify-content: center;
+        }
+
+        #welcomeModal .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #updateModal .modal,
+        #welcomeModal .modal {
+            padding: 1rem;
+        }
+
+        #updateModal .btn-container,
+        #welcomeModal .btn-container {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Naclock</div>
+            <p>前几次启动时加载可能稍慢，请静待几秒哦……</p>
+            <p id="currentVersionDisplay">Loading...&nbsp;&nbsp;by Nairocy</p>
+        </header>
+    </div>
+
+    <div id="updateModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-left">
+                <div class="version-header">
+                    <div class="version-info">
+                        <div>
+                            <span class="version-current" id="currentVersion">v3.46</span>
+                            <span class="version-arrow">→</span>
+                            <span class="version-new" id="newVersionDisplay">v3.67</span>
+                        </div>
+                        <div class="info-container">
+                            <div class="file-size">时间: <span id="updateDateDisplay">未知</span></div>
+                            <div class="file-size">大小: <span id="fileSizeDisplay">未知</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notes-header">
+                    <div class="update-notes-label">更新说明</div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="skipThisVersion">
+                        <label for="skipThisVersion">忽略此版本</label>
+                    </div>
+                </div>
+
+                <div class="update-notes-container">
+                    <div id="updateNotes" class="update-notes">
+                        <p>唔唔</p>
+                        <p>喵喵</p>
+                    </div>
+                </div>
+
+                <div id="forceUpdateWarning" class="force-update-warning" style="display: none;">
+                    <div class="warning-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        此版本包含重要更新，必须升级后才能继续使用
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-right">
+                <div class="image-container">
+                    <img src="res/pic/version.gif" alt="给我更新！" class="version-image" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23333\"/><text x=\"50\" y=\"50\" font-family=\"Arial\" font-size=\"14\" fill=\"%23ccc\" text-anchor=\"middle\" dy=\".3em\">给我更新</text></svg>'">
+                </div>
+
+                <div class="action-section">
+                    <div class="btn-container">
+                        <button id="updateBtn" class="btn btn-primary">开始更新</button>
+                        <button id="laterBtn" class="btn">暂时跳过</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="welcomeModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <h2>欢迎使用Naclock！</h2>
+            <div class="modal-content">
+                <p>认准我们的唯一官网：https://nairocy.com</p>
+                <p>1. 如果更换背景后没有显示新的背景，只需要退出重新进应用即可</p>
+                <p>2. 如果番茄钟开启但没有显示，只需要把开关再按一遍</p>
+                <p>3.其他问题可以在更多设置里进行反馈哦~ </p>
+            </div>
+            <div class="modal-actions">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="dontShowAgain">
+                    <label for="dontShowAgain">不再提示</label>
+                </div>
+                <button id="confirmBtn" class="btn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="inde.js"></script>
+</body>
+
+</html>

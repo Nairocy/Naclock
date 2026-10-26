@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>Naclock</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+            }
+
+            body {
+                background-color: #000000;
+                background-image: url('res/pic/nano.webp');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: #ffffff;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 2rem;
+                background-color: rgba(0, 0, 0, 0.4);
+                border-radius: 8px;
+                min-height: 100vh;
+                position: relative;
+            }
+
+            .back-button {
+                position: absolute;
+                top: 2rem;
+                left: 2rem;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: rgba(68, 68, 68, 0.6);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(85, 85, 85, 0.6);
+                z-index: 10;
+            }
+
+            .back-button:hover {
+                background-color: rgba(78, 205, 196, 0.6);
+                border-color: rgba(78, 205, 196, 0.5);
+            }
+
+            .back-arrow {
+                width: 24px;
+                height: 24px;
+                fill: #fff;
+            }
+
+            header {
+                text-align: center;
+                margin-bottom: 3rem;
+                padding-top: 1rem;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+                font-weight: 300;
+                letter-spacing: 2px;
+                margin-bottom: 0.5rem;
+                color: #fff;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            }
+
+            .subtitle {
+                color: #4ecdc4;
+                font-size: 1.1rem;
+                font-weight: 300;
+                letter-spacing: 1px;
+            }
+
+            .faq-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1.2rem;
+                margin-bottom: 3rem;
+            }
+
+            .faq-item {
+                background-color: rgba(20, 20, 25, 0.5);
+                border: 1px solid rgba(68, 68, 68, 0.7);
+                padding: 1.5rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                border-radius: 6px;
+                backdrop-filter: blur(2px);
+            }
+
+            .faq-item:hover {
+                background-color: rgba(30, 30, 35, 0.7);
+                border-color: rgba(78, 205, 196, 0.5);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .faq-number {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                background-color: rgba(78, 205, 196, 0.8);
+                color: #000;
+                border-radius: 50%;
+                margin-right: 1.2rem;
+                font-size: 1rem;
+                font-weight: bold;
+                flex-shrink: 0;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            .faq-text {
+                flex: 1;
+                font-size: 1.1rem;
+                color: #fff;
+            }
+
+            .link-icon {
+                margin-left: auto;
+                width: 18px;
+                height: 18px;
+                fill: #4ecdc4;
+            }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                display: none;
+            }
+
+            .modal {
+                background-color: rgba(20, 20, 25, 0.85);
+                border: 1px solid rgba(68, 68, 68, 0.7);
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                width: 90%;
+                max-width: 700px;
+                padding: 2rem;
+                position: relative;
+                animation: modalFadeIn 0.3s ease-out;
+            }
+
+            @keyframes modalFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1.8rem;
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: all 0.3s ease;
+            }
+
+            .close-btn:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .modal-title {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+                padding-right: 3rem;
+                color: #fff;
+                border-bottom: 1px solid rgba(68, 68, 68, 0.5);
+                padding-bottom: 1rem;
+            }
+
+            .reason,
+            .solution {
+                margin-bottom: 1.5rem;
+                padding: 1.2rem;
+                border-radius: 6px;
+            }
+
+            .reason {
+                background-color: rgba(255, 100, 100, 0.1);
+                border-left: 3px solid rgba(255, 100, 100, 0.5);
+            }
+
+            .solution {
+                background-color: rgba(78, 205, 196, 0.1);
+                border-left: 3px solid rgba(78, 205, 196, 0.5);
+            }
+
+            .reason h3,
+            .solution h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.8rem;
+                color: #fff;
+                display: flex;
+                align-items: center;
+            }
+
+            .reason h3::before,
+            .solution h3::before {
+                content: "";
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                margin-right: 0.5rem;
+            }
+
+            .reason h3::before {
+                background-color: #ff6464;
+            }
+
+            .solution h3::before {
+                background-color: #4ecdc4;
+            }
+
+            .reason p,
+            .solution p {
+                color: #ddd;
+                line-height: 1.6;
+                font-size: 1rem;
+            }
+
+            .link-container {
+                text-align: center;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 1px solid rgba(68, 68, 68, 0.5);
+            }
+
+            .external-link {
+                display: inline-block;
+                color: #4ecdc4;
+                text-decoration: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 4px;
+                background-color: rgba(78, 205, 196, 0.15);
+                border: 1px solid rgba(78, 205, 196, 0.3);
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .external-link:hover {
+                background-color: rgba(78, 205, 196, 0.3);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .footer-note {
+                text-align: center;
+                padding: 1.5rem 0;
+                color: #888;
+                font-size: 0.9rem;
+                border-top: 1px solid rgba(68, 68, 68, 0.5);
+                margin-top: 2rem;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 1.5rem;
+                }
+
+                h1 {
+                    font-size: 2.2rem;
+                }
+
+                .back-button {
+                    top: 1.5rem;
+                    left: 1.5rem;
+                    width: 45px;
+                    height: 45px;
+                }
+
+                .faq-item {
+                    padding: 1.2rem;
+                }
+
+                .faq-number {
+                    width: 32px;
+                    height: 32px;
+                    margin-right: 1rem;
+                }
+
+                .modal {
+                    padding: 1.5rem;
+                    width: 95%;
+                }
+
+                .modal-title {
+                    font-size: 1.5rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .container {
+                    padding: 1rem;
+                }
+
+                h1 {
+                    font-size: 1.8rem;
+                }
+
+                .faq-item {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .faq-number {
+                    margin-bottom: 0.8rem;
+                }
+
+                .modal {
+                    padding: 1.2rem;
+                }
+
+                .modal-title {
+                    font-size: 1.3rem;
+                    padding-right: 2rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <a href="page.html" class="back-button">
+                <a href="page.html" class="back-button">
+                    <svg class="back-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 19l-7-7 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </a>
+
+            <header>
+                <h1>常见问题解答</h1>
+                <div class="subtitle">Naclock 使用指南与故障排除</div>
+            </header>
+
+            <div class="faq-list">
+                <div class="faq-item" onclick="showModal(1)">
+                    <span class="faq-number">1</span>
+                    <div class="faq-text">为什么选择背景图片/音频后没有反应？</div>
+                </div>
+
+                <div class="faq-item" onclick="showModal(2)">
+                    <span class="faq-number">2</span>
+                    <div class="faq-text">为什么时钟数字更新的时候会抖动？</div>
+                </div>
+
+                <div class="faq-item" onclick="showModal(3)">
+                    <span class="faq-number">3</span>
+                    <div class="faq-text">为什么我的设备无法常亮显示？</div>
+                </div>
+
+                <div class="faq-item" onclick="showModal(4)">
+                    <span class="faq-number">4</span>
+                    <div class="faq-text">为什么模拟时钟的指针有偏差？</div>
+                </div>
+
+                <div class="faq-item" onclick="showModal(5)">
+                    <span class="faq-number">5</span>
+                    <div class="faq-text">为什么启动应用会闪退？</div>
+                </div>
+
+                <div class="faq-item" onclick="showModal(6)">
+                    <span class="faq-number">6</span>
+                    <div class="faq-text">更多反馈与问题提交</div>
+                    <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="modal1" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(1)">×</button>
+                <h2 class="modal-title">为什么选择背景图片/音频后没有反应？</h2>
+                <div class="reason">
+                    <h3>原因</h3>
+                    <p>背景图片/音频文件使用indexedDB存储，异步处理较大文件时无法马上热更新图片等文件。</p>
+                </div>
+                <div class="solution">
+                    <h3>解决方案</h3>
+                    <p>退出应用重新进入即可正常显示新设置的背景图片或播放音频。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal2" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(2)">×</button>
+                <h2 class="modal-title">为什么时钟数字更新的时候会抖动？</h2>
+                <div class="reason">
+                    <h3>原因</h3>
+                    <p>如果你的设备使用的是第三方字体，由于数字字符之间的像素大小不同，可能会造成数字抖动现象。</p>
+                </div>
+                <div class="solution">
+                    <h3>解决方案</h3>
+                    <p>在左上角[菜单]的[显示设置]中选择其他字体即可解决此问题。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal3" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(3)">×</button>
+                <h2 class="modal-title">为什么我的设备无法常亮显示？</h2>
+                <div class="reason">
+                    <h3>原因</h3>
+                    <p>本程序使用WakeLock API防止屏幕休眠，如果您的设备版本环境较低，可能无法支持该API。</p>
+                </div>
+                <div class="solution">
+                    <h3>解决方案</h3>
+                    <p>建议使用更新的设备或手动调整系统设置中的屏幕熄灭时间。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal4" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(4)">×</button>
+                <h2 class="modal-title">为什么模拟时钟的指针有偏差？</h2>
+                <div class="reason">
+                    <h3>原因</h3>
+                    <p>模拟时钟使用div定义实现，计时逻辑与旋转角度之间独立，导致指针更新时可能出现微小偏差。</p>
+                </div>
+                <div class="solution">
+                    <h3>解决方案</h3>
+                    <p>尝试切换模拟时钟位置，或多次退出重进应用可以解决此问题。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal5" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(5)">×</button>
+                <h2 class="modal-title">为什么启动应用会闪退？</h2>
+                <div class="reason">
+                    <h3>原因</h3>
+                    <p>启动页内联部分逻辑较大，初次加载无法瞬间加载完毕。</p>
+                </div>
+                <div class="solution">
+                    <h3>解决方案</h3>
+                    <p>触发闪退的概率比较小，我们将会努力在未来版本中修复此问题。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal6" class="modal-overlay">
+            <div class="modal">
+                <button class="close-btn" onclick="closeModal(6)">×</button>
+                <h2 class="modal-title">更多问题反馈</h2>
+                <div class="solution" style="border-left-color: rgba(120, 120, 255, 0.5); background-color: rgba(120, 120, 255, 0.1);">
+                    <h3 style="color: #aaccff;">反馈渠道</h3>
+                    <p>如果您有更多的问题、bug报告或者是功能建议，欢迎通过我们的官方反馈渠道提交。</p>
+                    <p>我们的开发团队会认真审阅每一条反馈，并努力改进Naclock的用户体验。</p>
+                </div>
+                <div class="link-container">
+                    <a href="https://feedback.nairocy.com/" class="external-link" target="_blank">前往反馈页面</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showModal(num) {
+                const modal = document.getElementById(`modal${num}`);
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal(num) {
+                const modal = document.getElementById(`modal${num}`);
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            window.onclick = function(event) {
+                const modals = document.getElementsByClassName('modal-overlay');
+                for (let i = 0; i < modals.length; i++) {
+                    if (event.target == modals[i]) {
+                        modals[i].style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                }
+            }
+
+            function openExternalLink() {
+                window.open('https://feedback.nairocy.com/', '_blank');
+            }
+
+            document.querySelectorAll('.faq-item')[5].addEventListener('click', function(e) {
+                if (!e.target.closest('.faq-number')) {
+                    showModal(6);
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modals = document.getElementsByClassName('modal-overlay');
+                    for (let i = 0; i < modals.length; i++) {
+                        if (modals[i].style.display === 'flex') {
+                            modals[i].style.display = 'none';
+                            document.body.style.overflow = 'auto';
+                            break;
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+
+</html>

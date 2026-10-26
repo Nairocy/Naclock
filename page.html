@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        <meta name="version" content="3.79">
+        <title>Naclock</title>
+        <link rel="icon" href="../../../pictures/clock.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="page.css">
+        <script src="ver.js"></script>
+    </head>
+
+    <body>
+        <div id="fullscreen-hint">双击屏幕可进入/退出全屏模式</div>
+
+        <div id="portrait-warning">
+            <i class="fas fa-sync-alt"></i>
+            <p>请将设备旋转至横屏<br>以获得更佳体验</p>
+        </div>
+
+        <div class="main-container layout-center">
+            <div class="clock-container">
+                <div class="clock">
+                    <div class="digital-time"></div>
+                    <div class="center"></div>
+                    <div id="hour" class="hand"></div>
+                    <div id="minute" class="hand"></div>
+                    <div id="second" class="hand"></div>
+                </div>
+            </div>
+
+            <div class="time-container">
+                <div id="time-display">00:00:00</div>
+            </div>
+        </div>
+
+        <div id="tomato-container">
+            <button id="tomato-control-btn" class="tomato-control-btn">
+                <i id="tomato-play-icon" class="fas fa-play"></i>
+            </button>
+            <div>
+                <i class="fas fa-clock tomato-icon"></i>
+                <span id="tomato-display">25:00</span>
+                <span id="tomato-count-display">0/4</span>
+            </div>
+        </div>
+
+        <div id="date-week-container">
+            <div id="date-display">2021/03/06</div>
+            <div id="week-display"> Saturday</div>
+        </div>
+
+        <div id="slogan-container">https://nairocy.com</div>
+
+        <div id="tomato-notification" class="tomato-notification">
+            <div class="notification-message"></div>
+            <button class="notification-confirm">朕已阅</button>
+        </div>
+
+        <button id="menu-button" aria-label="菜单">
+            <span class="menu-icon-bar"></span>
+            <span class="menu-icon-bar"></span>
+            <span class="menu-icon-bar"></span>
+        </button>
+
+        <div id="main-menu" class="menu-panel">
+            <div class="menu-header">
+                <h4 class="menu-title">Naclock&nbsp;&nbsp;&nbsp;v3.79</h4>
+                <button class="close-button" id="close-main-menu">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-grid">
+                    <div class="menu-option" id="open-display-settings">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-calendar-alt"></i></span>
+                            <span>显示设置</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-option" id="open-color-settings">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-palette"></i></span>
+                            <span>颜色设置</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-option" id="open-bg-settings">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-image"></i></span>
+                            <span>背景设置</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-option" id="open-tomato-settings">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-clock"></i></span>
+                            <span>番茄设置</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-option" id="open-more-settings">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-cog"></i></span>
+                            <span>更多设置</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--menu-border);">
+                        <div class="section-title" style="justify-content: center;">
+                            <i class="fas fa-qrcode"></i>
+                            <span>Nairocy 官网</span>
+                        </div>
+                        <div style="display: flex; justify-content: center; padding: 10px 0;">
+                            <img src="res/pic/qrcode.png" alt="Nairocy官网二维码" style="width: 150px; height: 150px; border-radius: 8px; cursor: pointer;" onclick="openNairocyWebsite()" id="qrcode-image">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="display-settings" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">显示设置</h2>
+                <button class="close-button" id="close-display-settings">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="menu-grid">
+                        <div class="menu-option" id="open-clock-position-picker">
+                            <div class="option-title">
+                                <span class="option-icon"><i class="fas fa-clock"></i></span>
+                                <span>模拟时钟</span>
+                            </div>
+                            <div class="option-status" id="clock-position-status">关闭</div>
+                        </div>
+
+                        <div class="menu-option" id="open-font-picker">
+                            <div class="option-title">
+                                <span class="option-icon"><i class="fas fa-font"></i></span>
+                                <span>时间字体</span>
+                            </div>
+                            <div class="option-status" id="font-status">系统字体</div>
+                        </div>
+
+                        <div class="opacity-control" style="margin-top: 12px;">
+                            <div class="opacity-label">
+                                <span><i class="fas fa-text-height"></i> 字体大小</span>
+                                <span id="font-size-value" class="opacity-value">100%</span>
+                            </div>
+                            <input type="range" min="0.5" max="2.0" step="0.01" value="1.0" class="opacity-slider" id="font-size-slider">
+                        </div>
+
+                    <div class="switch-container">
+                        <label class="switch-label">
+                            <i class="fas fa-stopwatch"></i>
+                            显示秒数
+                        </label>
+                        <label class="switch">
+                            <input type="checkbox" id="show-seconds" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                        <div class="switch-container">
+                            <label class="switch-label">
+                                <i class="fas fa-calendar-day"></i>
+                                显示日期
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="show-date" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container">
+                            <label class="switch-label">
+                                <i class="fas fa-calendar"></i>
+                                显示年份
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="show-year" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container">
+                            <label class="switch-label">
+                                <i class="fas fa-calendar-week"></i>
+                                显示星期
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="show-week" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container">
+                            <label class="switch-label">
+                                <i class="fas fa-calendar"></i>
+                                显示月日
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="show-month-day" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="audio-upload-container">
+                            <div class="tomato-slider-label">
+                                <span><i class="fas fa-quote-left"></i> 自定义标语</span>
+                            </div>
+                            <button class="action-button file-button" id="open-slogan-picker" style="width: 100%; justify-content: center;">
+                                <i class="fas fa-edit"></i> 标语设置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="clock-position-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">模拟时钟</h2>
+                <button class="close-button" id="close-clock-position-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="menu-grid">
+                        <div class="switch-container clock-position-option" data-value="none">
+                            <label class="switch-label">
+                                <i class="fas fa-ban"></i>
+                                关闭模拟时钟
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="clock-position" value="none">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container clock-position-option" data-value="left">
+                            <label class="switch-label">
+                                <i class="fas fa-arrow-left"></i>
+                                左侧模拟时钟
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="clock-position" value="left">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container clock-position-option" data-value="right">
+                            <label class="switch-label">
+                                <i class="fas fa-arrow-right"></i>
+                                右侧模拟时钟
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="clock-position" value="right">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="font-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">选择字体</h2>
+                <button class="close-button" id="close-font-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="menu-grid">
+                        <div class="switch-container font-option" data-font="Arial, sans-serif">
+                            <label class="switch-label">
+                                <span style="font-family: Arial, sans-serif;">系统字体</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="Arial, sans-serif">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container font-option" data-font="'Microsoft YaHei', sans-serif">
+                            <label class="switch-label">
+                                <span style="font-family: 'Microsoft YaHei', sans-serif;">微软雅黑</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="'Microsoft YaHei', sans-serif">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container font-option" data-font="'SimHei', sans-serif">
+                            <label class="switch-label">
+                                <span style="font-family: 'SimHei', sans-serif;">纯正黑体</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="'SimHei', sans-serif">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container font-option" data-font="'SimSun', serif">
+                            <label class="switch-label">
+                                <span style="font-family: 'SimSun', serif;">标准宋体</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="'SimSun', serif">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container font-option" data-font="'Courier New', monospace">
+                            <label class="switch-label">
+                                <span style="font-family: 'Courier New', monospace;">等宽萌体</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="'Courier New', monospace">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-container font-option" data-font="'Times New Roman', serif">
+                            <label class="switch-label">
+                                <span style="font-family: 'Times New Roman', serif;">衬线怡体</span>
+                            </label>
+                            <label class="switch">
+                                <input type="radio" name="font-select" value="'Times New Roman', serif">
+                                <span class="slider radio-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="color-settings" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">颜色设置</h2>
+                <button class="close-button" id="close-color-settings">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-grid">
+                    <div class="menu-option color-option" data-target="time">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-clock"></i></span>
+                            <span>时间颜色</span>
+                        </div>
+                        <div class="color-preview" style="width: 16px; height: 16px; background: #ffffff; border-radius: 50%;"></div>
+                    </div>
+
+                    <div class="menu-option color-option" data-target="date">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-calendar-day"></i></span>
+                            <span>日期颜色</span>
+                        </div>
+                        <div class="color-preview" style="width: 16px; height: 16px; background: #a3d5ff; border-radius: 50%;"></div>
+                    </div>
+
+                    <div class="menu-option color-option" data-target="week">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-calendar-week"></i></span>
+                            <span>星期颜色</span>
+                        </div>
+                        <div class="color-preview" style="width: 16px; height: 16px; background: #a3d5ff; border-radius: 50%;"></div>
+                    </div>
+
+                    <div class="menu-option color-option" data-target="slogan">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-font"></i></span>
+                            <span>标语颜色</span>
+                        </div>
+                        <div class="color-preview" style="width: 16px; height: 16px; background: #a3d5ff; border-radius: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bg-settings" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">背景设置</h2>
+                <button class="close-button" id="close-bg-settings">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="bg-option">
+                        <div class="bg-preview" id="bg-preview">
+                            <div class="bg-placeholder">背景预览</div>
+                        </div>
+                        <button class="action-button file-button" id="open-bg-picker">
+                            <i class="fas fa-image"></i> 选择图片
+                        </button>
+                    </div>
+                </div>
+
+                <div class="menu-section opacity-control">
+                    <div class="opacity-label">
+                        <span><i class="fas fa-adjust"></i> 背景透明度</span>
+                        <span id="opacity-value" class="opacity-value">100%</span>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="1" class="opacity-slider" id="opacity-slider">
+                </div>
+            </div>
+        </div>
+
+        <div id="tomato-settings" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">番茄设置</h2>
+                <button class="close-button" id="close-tomato-settings">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-grid">
+                    <div class="switch-container">
+                        <label class="switch-label">
+                            <i class="fas fa-stopwatch"></i>
+                            启用番茄钟
+                        </label>
+                        <label class="switch">
+                            <input type="checkbox" id="show-tomato" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="tomato-slider-container">
+                        <div class="tomato-slider-label">
+                            <span><i class="fas fa-clock"></i> 番茄钟个数</span>
+                            <span id="tomato-count-value" class="tomato-slider-value">4</span>
+                        </div>
+                        <input type="range" min="1" max="10" value="4" class="tomato-slider" id="tomato-count-slider">
+                    </div>
+
+                    <div class="tomato-slider-container">
+                        <div class="tomato-slider-label">
+                            <span><i class="fas fa-hourglass-start"></i> 专注时长(红色/分钟)</span>
+                            <span id="focus-time-value" class="tomato-slider-value">25</span>
+                        </div>
+                        <input type="range" min="1" max="60" value="25" class="tomato-slider" id="focus-time-slider">
+                    </div>
+
+                    <div class="tomato-slider-container">
+                        <div class="tomato-slider-label">
+                            <span><i class="fas fa-coffee"></i> 休息时长(绿色/分钟)</span>
+                            <span id="rest-time-value" class="tomato-slider-value">5</span>
+                        </div>
+                        <input type="range" min="1" max="30" value="5" class="tomato-slider" id="rest-time-slider">
+                    </div>
+
+                    <div class="switch-container">
+                        <label class="switch-label">
+                            <i class="fas fa-mobile-alt"></i>
+                            震动提醒
+                        </label>
+                        <label class="switch">
+                            <input type="checkbox" id="vibrate-switch" checked>
+                                <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-container">
+                        <label class="switch-label">
+                            <i class="fas fa-music"></i>
+                            音频提醒
+                        </label>
+                        <label class="switch">
+                            <input type="checkbox" id="play-sound" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="audio-upload-container">
+                        <div class="tomato-slider-label">
+                            <span><i class="fas fa-volume-up"></i> 自定义音频（无则默认）</span>
+                        </div>
+                        <label for="audio-upload" class="action-button file-button" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-upload"></i> 上传音频
+                        </label>
+                        <input type="file" id="audio-upload" accept="audio/*" style="display: none;">
+                        <div id="audio-file-name" class="audio-file-info">未选择音频</div>
+                    </div>
+
+                    <div class="audio-upload-container">
+                        <div class="tomato-slider-label">
+                            <span><i class="fas fa-bell"></i> 自定义番茄提示</span>
+                        </div>
+                        <button class="action-button file-button" id="open-notification-settings" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-edit"></i> 编辑提示
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="more-settings" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">更多设置</h2>
+                <button class="close-button" id="close-more-settings">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-grid">
+                    <div class="menu-option" id="open-help-ques">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-question-circle"></i></span>
+                            <span>常见问题</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-option" id="open-version-check">
+                        <div class="option-title">
+                            <span class="option-icon"><i class="fas fa-sync-alt"></i></span>
+                            <span>应用信息</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="color-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">选择颜色</h2>
+                <button class="close-button" id="close-color-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="color-picker-panel">
+                    <div class="color-picker-area" id="color-area">
+                        <div class="color-rectangle"></div>
+                        <div class="color-overlay"></div>
+                        <div class="color-pointer" id="color-pointer"></div>
+                    </div>
+
+                    <div class="color-controls">
+                        <div class="current-color-row">
+                            <span class="current-color-title">当前颜色:</span>
+                            <div class="current-color" id="current-color"></div>
+                            <div>
+                                <button class="action-button reset-button" id="reset-color">
+                                    <i class="fas fa-undo"></i> 重置
+                                </button>
+                                <button class="action-button confirm-button" id="confirm-color">
+                                    <i class="fas fa-check"></i> 应用
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="color-values">
+                            <div class="color-component">
+                                <div class="color-label">
+                                    <span>H (色调)</span>
+                                    <span class="color-value" id="h-value">182</span>
+                                </div>
+                                <div class="color-slider-container">
+                                    <input type="range" min="0" max="360" value="182" class="color-slider h-slider" id="h-slider">
+                                </div>
+                            </div>
+
+                            <div class="color-component">
+                                <div class="color-label">
+                                    <span>S (饱和度)</span>
+                                    <span class="color-value" id="s-value">48</span>
+                                </div>
+                                <div class="color-slider-container">
+                                    <input type="range" min="0" max="100" value="48" class="color-slider s-v-slider" id="s-slider">
+                                </div>
+                            </div>
+
+                            <div class="color-component">
+                                <div class="color-label">
+                                    <span>V (亮度)</span>
+                                    <span class="color-value" id="v-value">47</span>
+                                </div>
+                                <div class="color-slider-container">
+                                    <input type="range" min="0" , max="100" value="47" class="color-slider s-v-slider v-slider" id="v-slider">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bg-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">自定义背景</h2>
+                <button class="close-button" id="close-bg-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="bg-option" style="margin-bottom: 12px;">
+                        <div class="bg-preview" id="large-bg-preview">
+                            <div class="bg-placeholder">选择图片后将显示在这里</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <label for="bg-file" class="action-button file-button" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-folder-open"></i> 从设备选择图片
+                    </label>
+                    <input type="file" id="bg-file" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="menu-section" style="display: flex; gap: 8px;">
+                    <button class="action-button reset-button" id="reset-bg">
+                        <i class="fas fa-undo"></i> 重置背景
+                    </button>
+                    <button class="action-button confirm-button" id="apply-bg">
+                        <i class="fas fa-check"></i> 应用背景
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="slogan-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">自定义标语</h2>
+                <button class="close-button" id="close-slogan-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="menu-grid">
+                        <div class="switch-container">
+                            <label class="switch-label">
+                                <i class="fas fa-quote-left"></i>
+                                显示标语
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="show-slogan" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="slogan-input-container">
+                            <input type="text" id="slogan-input" placeholder="输入标语内容" value="https://nairocy.com" class="slogan-input">
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="action-button reset-button" id="reset-slogan">
+                                <i class="fas fa-undo"></i> 重置
+                            </button>
+                            <button class="action-button confirm-button" id="confirm-slogan">
+                                <i class="fas fa-check"></i> 应用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="version-info-modal" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">应用信息</h2>
+                <button class="close-button" id="close-version-modal">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="version-info-box" style="background: rgba(30, 30, 30, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div>
+                                <div style="font-size: 0.9rem; color: #cccccc;">当前版本</div>
+                                <div id="current-version-display" style="font-size: 1.2rem; font-weight: bold; color: #ffffff;">加载中...</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.9rem; color: #cccccc;">最新版本</div>
+                                <div id="latest-version-display" style="font-size: 1.2rem; font-weight: bold; color: #4ecdc4;">加载中...</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.9rem; color: #cccccc; margin-bottom: 0.5rem;">更新状态</div>
+                            <div id="update-status" style="font-size: 1rem; font-weight: 500; padding: 0.5rem; border-radius: 6px; background: rgba(0, 0, 0, 0.3);">
+                                正在检测...
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.9rem; color: #cccccc; margin-bottom: 0.5rem;">发布日期</div>
+                            <div id="release-date-display" style="font-size: 1rem;">-</div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.9rem; color: #cccccc; margin-bottom: 0.5rem;">文件大小</div>
+                            <div id="file-size-display" style="font-size: 1rem;">-</div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="font-size: 0.9rem; color: #cccccc; margin-bottom: 0.5rem;">更新说明</div>
+                            <div id="release-notes-display" style="font-size: 0.9rem; line-height: 1.5; color: #cccccc; max-height: 200px; overflow-y: auto; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                                暂无更新说明
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button class="action-button reset-button" id="update-or-close-btn" style="flex: 1;">
+                                <i class="fas fa-times"></i> 关闭
+                            </button>
+                            <button class="action-button confirm-button" id="check-version-again" style="flex: 1;">
+                                <i class="fas fa-redo"></i> 重新检测
+                            </button>
+                        </div>
+
+                        <div id="force-update-warning" style="display: none; margin-top: 1rem; padding: 0.8rem; background: rgba(255, 107, 107, 0.1); border-radius: 6px; border: 1px solid rgba(255, 107, 107, 0.3);">
+                            <div style="display: flex; align-items: center; gap: 8px; color: #ff6b6b; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>强制更新提示</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #cccccc;">
+                                此版本包含重要安全更新，必须升级后才能继续使用
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notification-picker" class="menu-panel">
+            <div class="menu-header">
+                <h2 class="menu-title">自定义番茄提示</h2>
+                <button class="close-button" id="close-notification-picker">&times;</button>
+            </div>
+
+            <div class="menu-content">
+                <div class="menu-section">
+                    <div class="notification-input-container">
+                        <label class="notification-label">
+                            <i class="fas fa-tasks"></i>
+                            阶段完成
+                        </label>
+                        <textarea id="phase-complete-notification" class="notification-input" placeholder="本次专注已结束！剩余番茄钟：{X}个，接下来是绿色休息时间～"></textarea>
+                        <div class="notification-hint">
+                            其中 {X} 为剩余番茄钟的占位符，保存时会自动转换为实际数量，请勿修改
+                        </div>
+                    </div>
+
+                    <div class="notification-input-container">
+                        <label class="notification-label">
+                            <i class="fas fa-check-circle"></i>
+                            全部完成
+                        </label>
+                        <textarea id="all-complete-notification" class="notification-input" placeholder="太棒了！已完成所有番茄钟任务！"></textarea>
+                    </div>
+
+                    <div class="notification-input-container">
+                        <label class="notification-label">
+                            <i class="fas fa-coffee"></i>
+                            休息结束
+                        </label>
+                        <textarea id="rest-end-notification" class="notification-input" placeholder="休息结束，请点击开始继续专注！"></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="action-button reset-button" id="reset-notification">
+                            <i class="fas fa-undo"></i> 重置
+                        </button>
+                        <button class="action-button confirm-button" id="confirm-notification">
+                            <i class="fas fa-check"></i> 应用
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-overlay" id="menu-overlay"></div>
+
+        <script src="page.js"></script>
+    </body>
+
+</html>

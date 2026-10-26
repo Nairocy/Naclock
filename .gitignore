@@ -1,0 +1,9 @@
+# 打包产物与混淆版不入库（本仓库只放未混淆源码）
+混淆/
+unpackage/
+dist/
+node_modules/
+*.apk
+*.wgt
+*.zip
+.DS_Store
